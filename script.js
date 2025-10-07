@@ -4,11 +4,13 @@ class QuizManager {
         this.currentQuiz = null;
         this.currentAnswers = {};
         this.currentResults = null;
+        this.aiGeneratedQuiz = null;
         
         this.initializeTheme();
         this.initializeEventListeners();
         this.loadQuizList();
         this.updateQuizSelector();
+        this.loadAISettings();
     }
 
     initializeTheme() {
@@ -77,6 +79,15 @@ class QuizManager {
             });
         });
 
+        // Paste buttons
+        document.getElementById('paste-questions').addEventListener('click', () => {
+            this.pasteFromClipboard('questions-input');
+        });
+
+        document.getElementById('paste-answers').addEventListener('click', () => {
+            this.pasteFromClipboard('answers-input');
+        });
+
         // Quiz creation
         document.getElementById('process-quiz').addEventListener('click', () => {
             this.processQuiz();
@@ -126,6 +137,34 @@ class QuizManager {
         document.getElementById('cancel-edit').addEventListener('click', () => {
             this.closeEditModal();
         });
+    }
+
+    async pasteFromClipboard(targetId) {
+        try {
+            const text = await navigator.clipboard.readText();
+            const textarea = document.getElementById(targetId);
+            
+            if (!text) {
+                this.showToast('⚠️ Clipboard trống!', 'warning');
+                return;
+            }
+
+            // If textarea already has content, append with newline
+            if (textarea.value.trim()) {
+                textarea.value += '\n' + text;
+            } else {
+                textarea.value = text;
+            }
+
+            // Focus and scroll to bottom
+            textarea.focus();
+            textarea.scrollTop = textarea.scrollHeight;
+
+            this.showToast('📋 Đã dán nội dung thành công!', 'success');
+        } catch (error) {
+            this.showToast('❌ Không thể truy cập clipboard. Vui lòng dán thủ công (Ctrl+V)', 'error');
+            console.error('Clipboard error:', error);
+        }
     }
 
     switchTab(tabName) {
@@ -251,12 +290,18 @@ class QuizManager {
         const lines = text.split('\n').map(line => line.trim()).filter(line => line);
         
         for (let line of lines) {
-            if (line.match(/^\d+[:：.]\s*[A-Da-d]$/)) {
-                // Format: "1. B" or "1: B"
+            // Format: "Câu 1: B" or "Câu 1. B"
+            if (line.match(/^Câu\s+\d+[:：.]\s*[A-Da-d]$/i)) {
+                const answer = line.replace(/^Câu\s+\d+[:：.]\s*/i, '').toUpperCase();
+                answers.push(answer);
+            }
+            // Format: "1. B" or "1: B"
+            else if (line.match(/^\d+[:：.]\s*[A-Da-d]$/)) {
                 const answer = line.replace(/^\d+[:：.]\s*/, '').toUpperCase();
                 answers.push(answer);
-            } else if (line.match(/^[A-Da-d]$/)) {
-                // Format: Just "B"
+            }
+            // Format: Just "B"
+            else if (line.match(/^[A-Da-d]$/)) {
                 answers.push(line.toUpperCase());
             }
         }
@@ -677,9 +722,36 @@ class QuizManager {
         const minutes = Math.floor(totalTime / 60);
         const seconds = totalTime % 60;
 
+        // Determine performance level and message
+        let performanceClass = '';
+        let performanceMessage = '';
+        let performanceIcon = '';
+        
+        const percentage = (correctCount / totalQuestions) * 100;
+        
+        if (percentage >= 90) {
+            performanceClass = 'excellent';
+            performanceMessage = 'Xuất sắc! 🌟';
+            performanceIcon = '🏆';
+        } else if (percentage >= 75) {
+            performanceClass = 'good';
+            performanceMessage = 'Tốt lắm! 👍';
+            performanceIcon = '⭐';
+        } else if (percentage >= 50) {
+            performanceClass = 'average';
+            performanceMessage = 'Khá ổn! 💪';
+            performanceIcon = '📚';
+        } else {
+            performanceClass = 'needs-improvement';
+            performanceMessage = 'Cần cố gắng thêm! 📖';
+            performanceIcon = '💡';
+        }
+
         const resultsHTML = `
-            <div class="results-header">
-                <h2><i class="fas fa-trophy"></i> Kết Quả: ${quizTitle}</h2>
+            <div class="results-header ${performanceClass}">
+                <div class="performance-badge">${performanceIcon}</div>
+                <h2><i class="fas fa-trophy"></i> ${performanceMessage}</h2>
+                <div class="quiz-title-result">${quizTitle}</div>
                 <div class="score-display">${score}/10</div>
                 <div class="score-text">${correctCount}/${totalQuestions} câu đúng</div>
             </div>
@@ -698,38 +770,18 @@ class QuizManager {
                     <div class="stat-label">Thời Gian</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number">${Math.round((correctCount/totalQuestions)*100)}%</div>
+                    <div class="stat-number">${Math.round(percentage)}%</div>
                     <div class="stat-label">Tỷ Lệ Đúng</div>
                 </div>
             </div>
 
-            <div class="results-details">
-                <h3><i class="fas fa-list-alt"></i> Chi Tiết Từng Câu</h3>
-                ${results.map((result, index) => `
-                    <div class="result-question ${result.isCorrect ? 'correct' : 'incorrect'}">
-                        <div class="result-question-text">
-                            <strong>Câu ${index + 1}:</strong> ${result.question}
-                        </div>
-                        <div class="result-answers">
-                            <div class="your-answer">
-                                <strong>Câu trả lời của bạn:</strong> 
-                                <span class="${result.isCorrect ? 'correct-answer' : 'incorrect-answer'}">
-                                    ${result.userAnswer ? `${result.userAnswer}. ${result.options.find(opt => opt.letter === result.userAnswer)?.text || 'Không chọn'}` : 'Không chọn'}
-                                </span>
-                            </div>
-                            ${!result.isCorrect ? `
-                                <div class="correct-answer">
-                                    <strong>Đáp án đúng:</strong> ${result.correctAnswer}. ${result.options.find(opt => opt.letter === result.correctAnswer)?.text}
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-
-            <div style="text-align: center; margin-top: 30px;">
-                <button class="btn btn-primary" onclick="quizManager.switchTab('quiz')">
-                    <i class="fas fa-redo"></i>
+            <div class="action-buttons-container">
+                <button class="btn btn-review" onclick="quizManager.reviewAnswers()">
+                    <i class="fas fa-eye"></i>
+                    Xem Lại Bài Làm
+                </button>
+                <button class="btn btn-primary" onclick="quizManager.startNewQuiz()">
+                    <i class="fas fa-play"></i>
                     Làm Bài Khác
                 </button>
                 <button class="btn btn-secondary" onclick="quizManager.exportResults()">
@@ -737,9 +789,100 @@ class QuizManager {
                     Xuất Kết Quả
                 </button>
             </div>
+
+            <div id="review-section" class="review-section" style="display: none;">
+                <div class="review-header">
+                    <h3><i class="fas fa-list-alt"></i> Chi Tiết Từng Câu</h3>
+                    <button class="btn-close-review" onclick="quizManager.closeReview()">
+                        <i class="fas fa-times"></i>
+                        Đóng
+                    </button>
+                </div>
+                <div class="results-details">
+                    ${results.map((result, index) => `
+                        <div class="result-question ${result.isCorrect ? 'correct' : 'incorrect'}">
+                            <div class="result-question-header">
+                                <div class="question-status-badge ${result.isCorrect ? 'correct-badge' : 'incorrect-badge'}">
+                                    <i class="fas ${result.isCorrect ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                                    ${result.isCorrect ? 'Đúng' : 'Sai'}
+                                </div>
+                            </div>
+                            <div class="result-question-text">
+                                <strong>Câu ${index + 1}:</strong> ${result.question}
+                            </div>
+                            <div class="result-options">
+                                ${result.options.map(opt => {
+                                    const isUserAnswer = opt.letter === result.userAnswer;
+                                    const isCorrectAnswer = opt.letter === result.correctAnswer;
+                                    let optionClass = 'result-option';
+                                    
+                                    if (isCorrectAnswer) {
+                                        optionClass += ' correct-option';
+                                    }
+                                    if (isUserAnswer && !isCorrectAnswer) {
+                                        optionClass += ' wrong-option';
+                                    }
+                                    
+                                    return `
+                                        <div class="${optionClass}">
+                                            <span class="option-letter">${opt.letter}.</span>
+                                            <span class="option-text">${opt.text}</span>
+                                            ${isCorrectAnswer ? '<i class="fas fa-check-circle correct-icon"></i>' : ''}
+                                            ${isUserAnswer && !isCorrectAnswer ? '<i class="fas fa-times-circle wrong-icon"></i>' : ''}
+                                            ${isUserAnswer ? '<span class="your-choice-badge">Bạn chọn</span>' : ''}
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                            ${!result.userAnswer ? '<div class="no-answer-notice"><i class="fas fa-exclamation-triangle"></i> Bạn chưa trả lời câu này</div>' : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
         `;
 
         document.getElementById('results-container').innerHTML = resultsHTML;
+    }
+
+    reviewAnswers() {
+        const reviewSection = document.getElementById('review-section');
+        if (reviewSection) {
+            reviewSection.style.display = 'block';
+            reviewSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            this.showToast('📖 Đang xem lại bài làm', 'info');
+        }
+    }
+
+    closeReview() {
+        const reviewSection = document.getElementById('review-section');
+        if (reviewSection) {
+            reviewSection.style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    startNewQuiz() {
+        // Clear current quiz data to prevent going back
+        this.currentQuiz = null;
+        this.currentAnswers = {};
+        
+        // Switch to quiz tab
+        this.switchTab('quiz');
+        
+        // Reset quiz selector
+        document.getElementById('quiz-selector').value = '';
+        document.getElementById('start-quiz').disabled = true;
+        
+        // Clear quiz container
+        document.getElementById('quiz-container').innerHTML = `
+            <div class="quiz-placeholder">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>Sẵn sàng làm bài mới?</h3>
+                <p>Chọn một bài quiz và bấm "Bắt Đầu" để làm bài mới</p>
+            </div>
+        `;
+        
+        this.showToast('🎯 Hãy chọn bài quiz mới để bắt đầu!', 'success');
     }
 
     exportResults() {
