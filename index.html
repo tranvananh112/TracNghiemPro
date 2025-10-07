@@ -7,7 +7,31 @@
     <title>Hệ Thống Trắc Nghiệm Thông Minh</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Fallback CDN nếu CDN chính không load được -->
+    <script>
+        // Kiểm tra Font Awesome đã load chưa
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const testIcon = document.querySelector('.fas');
+                if (testIcon) {
+                    const styles = window.getComputedStyle(testIcon);
+                    const fontFamily = styles.getPropertyValue('font-family');
+
+                    // Nếu Font Awesome chưa load, thử CDN khác
+                    if (!fontFamily.includes('Font Awesome')) {
+                        console.warn('Font Awesome CDN chính không load được, đang thử CDN dự phòng...');
+                        const fallbackLink = document.createElement('link');
+                        fallbackLink.rel = 'stylesheet';
+                        fallbackLink.href = 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css';
+                        document.head.appendChild(fallbackLink);
+                    } else {
+                        console.log('✅ Font Awesome đã load thành công!');
+                    }
+                }
+            }, 500);
+        });
+    </script>
 </head>
 
 <body>
@@ -17,7 +41,7 @@
             <div class="logo">
                 <div class="logo-left">
                     <i class="fas fa-graduation-cap"></i>
-                    <h1>QuizMaster Pro</h1>
+                    <h1>QuizTva Pro</h1>
                 </div>
                 <button class="theme-toggle" id="theme-toggle" title="Chuyển đổi chế độ">
                     <i class="fas fa-moon"></i>
@@ -54,38 +78,38 @@
                 <div class="card">
                     <div class="home-hero">
                         <div class="hero-icon">🎓</div>
-                        <h1 class="hero-title">QuizMaster Pro</h1>
+                        <h1 class="hero-title">QuizTva Pro</h1>
                         <p class="hero-subtitle">Hệ thống tạo và quản lý bài trắc nghiệm thông minh, hiện đại và dễ sử dụng</p>
                     </div>
 
                     <div class="features-grid">
                         <div class="feature-card">
-                            <div class="feature-icon">✨</div>
+                            <div class="feature-icon"><i class="fas fa-magic"></i></div>
                             <h3>Tạo Quiz Nhanh Chóng</h3>
                             <p>Nhập câu hỏi và đáp án theo định dạng đơn giản, hệ thống tự động xử lý và tạo bài quiz chuyên nghiệp</p>
                         </div>
                         <div class="feature-card">
-                            <div class="feature-icon">📊</div>
+                            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
                             <h3>Quản Lý Thông Minh</h3>
                             <p>Chỉnh sửa, sao chép, xóa các bài quiz dễ dàng. Lưu trữ không giới hạn trên trình duyệt của bạn</p>
                         </div>
                         <div class="feature-card">
-                            <div class="feature-icon">🎯</div>
+                            <div class="feature-icon"><i class="fas fa-bullseye"></i></div>
                             <h3>Làm Bài Linh Hoạt</h3>
-                            <p>Xáo trộn câu hỏi, theo dõi tiến độ, xem kết quả chi tiết v��i giao diện đẹp mắt và trực quan</p>
+                            <p>Xáo trộn câu hỏi, theo dõi tiến độ, xem kết quả chi tiết với giao diện đẹp mắt và trực quan</p>
                         </div>
                         <div class="feature-card">
-                            <div class="feature-icon">🌙</div>
+                            <div class="feature-icon"><i class="fas fa-moon"></i></div>
                             <h3>Chế Độ Tối</h3>
                             <p>Bảo vệ mắt với chế độ tối hiện đại, phù hợp cho việc học tập vào ban đêm</p>
                         </div>
                         <div class="feature-card">
-                            <div class="feature-icon">📱</div>
+                            <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
                             <h3>Responsive Design</h3>
                             <p>Hoạt động mượt mà trên mọi thiết bị: máy tính, tablet, điện thoại</p>
                         </div>
                         <div class="feature-card">
-                            <div class="feature-icon">💾</div>
+                            <div class="feature-icon"><i class="fas fa-save"></i></div>
                             <h3>Lưu Trữ Cục Bộ</h3>
                             <p>Dữ liệu được lưu trữ an toàn trên trình duyệt, không cần kết nối internet</p>
                         </div>
@@ -123,9 +147,9 @@
                                 <h3>Trần Văn Anh</h3>
                                 <div class="author-title">Nhà Phát Triển Web & Lập Trình Viên</div>
                                 <p class="author-description">
-                                    Chào mừng bạn đến với QuizMaster Pro! Tôi là Trần Văn Anh, người tạo ra hệ thống này 
-                                    với mong muốn mang đến một công cụ học tập hiện đại, dễ sử dụng và hoàn toàn miễn phí 
-                                    cho mọi người. Hệ thống được xây dựng với công nghệ web hiện đại, tập trung vào trải 
+                                    Chào mừng bạn đến với QuizTva Pro! Tôi là Trần Văn Anh, người tạo ra hệ thống này
+                                    với mong muốn mang đến một công cụ học tập hiện đại, dễ sử dụng và hoàn toàn miễn phí
+                                    cho mọi người. Hệ thống được xây dựng với công nghệ web hiện đại, tập trung vào trải
                                     nghiệm người dùng và hiệu suất tối ưu.
                                 </p>
                                 <div class="author-stats">
@@ -153,7 +177,7 @@
                     <div class="home-footer">
                         <p>
                             <i class="fas fa-info-circle"></i>
-                            Phát triển bởi <strong>Trần Văn Anh</strong> - © 2024 QuizMaster Pro. All rights reserved.
+                            Phát triển bởi <strong>Trần Văn Anh</strong> - © 2025 QuizTva Pro. All rights reserved.
                         </p>
                     </div>
                 </div>

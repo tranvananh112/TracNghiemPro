@@ -2378,12 +2378,16 @@ textarea::placeholder {
 
 .feature-icon {
     font-size: 48px;
+    margin-bottom: 20px;
+    transition: var(--transition);
+}
+
+.feature-icon i {
     background: var(--bg-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 20px;
-    transition: var(--transition);
+    font-size: 48px;
 }
 
 .feature-card:hover .feature-icon {
