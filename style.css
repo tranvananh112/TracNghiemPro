@@ -1833,6 +1833,14 @@ textarea::placeholder {
     .score-display {
         font-size: 48px;
     }
+    
+    .scroll-to-top {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        right: 20px;
+        font-size: 20px;
+    }
 }
 
 /* Animations */
@@ -2616,13 +2624,66 @@ textarea::placeholder {
     }
 }
 
+/* Scroll to Top Button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 55px;
+    height: 55px;
+    background: var(--bg-gradient);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    transition: var(--transition);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(100px);
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+}
+
+.scroll-to-top:active {
+    transform: translateY(-2px) scale(1.05);
+}
+
+.scroll-to-top i {
+    animation: bounceUpDown 2s ease-in-out infinite;
+}
+
+@keyframes bounceUpDown {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+
 /* Print Styles */
 @media print {
     body {
         background: white;
     }
     
-    .header, .nav-tabs, .button-group, .quiz-controls {
+    .header, .nav-tabs, .button-group, .quiz-controls, .scroll-to-top {
         display: none;
     }
     

@@ -185,7 +185,7 @@ class QuizManager {
         const answersText = document.getElementById('answers-input').value.trim();
 
         if (!title) {
-            this.showToast('Vui lòng nhập tên bài quiz!', 'error');
+            this.showToast('Vui lòng nhập t��n bài quiz!', 'error');
             return;
         }
 
@@ -488,7 +488,6 @@ class QuizManager {
 
     startQuiz() {
         const selectedQuizId = document.getElementById('quiz-selector').value;
-        // Safer cross-browser check (avoid optional chaining)
         const shuffleEl = document.getElementById('shuffle-questions');
         const shouldShuffle = shuffleEl ? !!shuffleEl.checked : false;
 
@@ -503,7 +502,6 @@ class QuizManager {
             return;
         }
 
-        // Deep copy questions to avoid mutating original data
         const questionsClone = (quiz.questions || []).map(q => ({
             question: q.question,
             options: (q.options || []).map(o => ({ letter: o.letter, text: o.text })),
@@ -622,22 +620,22 @@ class QuizManager {
             const elapsed = Date.now() - this.quizStartTime;
             const minutes = Math.floor(elapsed / 60000);
             const seconds = Math.floor((elapsed % 60000) / 1000);
-            document.getElementById('quiz-timer').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const timerEl = document.getElementById('quiz-timer');
+            if (timerEl) {
+                timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
         }, 1000);
     }
 
     updateAnswer(questionIndex, selectedAnswer) {
         this.currentAnswers[questionIndex] = selectedAnswer;
         
-        // Update UI
         const option = document.querySelector(`#q${questionIndex}_${selectedAnswer}`).closest('.option');
         document.querySelectorAll(`input[name="question_${questionIndex}"]`).forEach(input => {
             input.closest('.option').classList.remove('selected');
         });
         option.classList.add('selected');
         
-        // Update progress bar
         this.updateProgressBar();
     }
 
@@ -656,7 +654,6 @@ class QuizManager {
         const endTime = Date.now();
         const totalTime = Math.floor((endTime - this.quizStartTime) / 1000);
 
-        // Calculate results
         let correctCount = 0;
         const results = this.currentQuiz.questions.map((question, index) => {
             const userAnswer = this.currentAnswers[index] || '';
@@ -685,7 +682,6 @@ class QuizManager {
             completedAt: new Date().toISOString()
         };
 
-        // Save result to localStorage
         const savedResults = JSON.parse(localStorage.getItem('quizResults')) || [];
         savedResults.push(this.currentResults);
         localStorage.setItem('quizResults', JSON.stringify(savedResults));
@@ -712,7 +708,6 @@ class QuizManager {
         const minutes = Math.floor(totalTime / 60);
         const seconds = totalTime % 60;
 
-        // Determine performance level and message
         let performanceClass = '';
         let performanceMessage = '';
         let performanceIcon = '';
@@ -766,9 +761,13 @@ class QuizManager {
             </div>
 
             <div class="action-buttons-container">
-                <button class="btn btn-review" onclick="quizManager.reviewAnswers()">
+                <button class="btn btn-review" onclick="quizManager.reviewAnswers(false)">
                     <i class="fas fa-eye"></i>
                     Xem Lại Bài Làm
+                </button>
+                <button class="btn btn-danger" onclick="quizManager.reviewAnswers(true)">
+                    <i class="fas fa-times-circle"></i>
+                    Xem Đáp Án Sai
                 </button>
                 <button class="btn btn-primary" onclick="quizManager.startNewQuiz()">
                     <i class="fas fa-play"></i>
@@ -782,65 +781,100 @@ class QuizManager {
 
             <div id="review-section" class="review-section" style="display: none;">
                 <div class="review-header">
-                    <h3><i class="fas fa-list-alt"></i> Chi Tiết Từng Câu</h3>
+                    <h3><i class="fas fa-list-alt"></i> <span id="review-title">Chi Tiết Từng Câu</span></h3>
                     <button class="btn-close-review" onclick="quizManager.closeReview()">
                         <i class="fas fa-times"></i>
                         Đóng
                     </button>
                 </div>
-                <div class="results-details">
-                    ${results.map((result, index) => `
-                        <div class="result-question ${result.isCorrect ? 'correct' : 'incorrect'}">
-                            <div class="result-question-header">
-                                <div class="question-status-badge ${result.isCorrect ? 'correct-badge' : 'incorrect-badge'}">
-                                    <i class="fas ${result.isCorrect ? 'fa-check-circle' : 'fa-times-circle'}"></i>
-                                    ${result.isCorrect ? 'Đúng' : 'Sai'}
-                                </div>
-                            </div>
-                            <div class="result-question-text">
-                                <strong>Câu ${index + 1}:</strong> ${result.question}
-                            </div>
-                            <div class="result-options">
-                                ${result.options.map(opt => {
-                                    const isUserAnswer = opt.letter === result.userAnswer;
-                                    const isCorrectAnswer = opt.letter === result.correctAnswer;
-                                    let optionClass = 'result-option';
-                                    
-                                    if (isCorrectAnswer) {
-                                        optionClass += ' correct-option';
-                                    }
-                                    if (isUserAnswer && !isCorrectAnswer) {
-                                        optionClass += ' wrong-option';
-                                    }
-                                    
-                                    return `
-                                        <div class="${optionClass}">
-                                            <span class="option-letter">${opt.letter}.</span>
-                                            <span class="option-text">${opt.text}</span>
-                                            ${isCorrectAnswer ? '<i class="fas fa-check-circle correct-icon"></i>' : ''}
-                                            ${isUserAnswer && !isCorrectAnswer ? '<i class="fas fa-times-circle wrong-icon"></i>' : ''}
-                                            ${isUserAnswer ? '<span class="your-choice-badge">Bạn chọn</span>' : ''}
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                            ${!result.userAnswer ? '<div class="no-answer-notice"><i class="fas fa-exclamation-triangle"></i> Bạn chưa trả lời câu này</div>' : ''}
-                        </div>
-                    `).join('')}
-                </div>
+                <div class="results-details" id="results-details-container"></div>
             </div>
         `;
 
         document.getElementById('results-container').innerHTML = resultsHTML;
     }
 
-    reviewAnswers() {
+    reviewAnswers(filterWrongOnly = false) {
+        if (!this.currentResults) return;
+        
+        const { results } = this.currentResults;
         const reviewSection = document.getElementById('review-section');
-        if (reviewSection) {
-            reviewSection.style.display = 'block';
-            reviewSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            this.showToast('📖 Đang xem lại bài làm', 'info');
+        const reviewTitle = document.getElementById('review-title');
+        const detailsContainer = document.getElementById('results-details-container');
+        
+        if (!reviewSection || !detailsContainer) return;
+        
+        const displayResults = filterWrongOnly 
+            ? results.filter(r => !r.isCorrect) 
+            : results;
+        
+        if (reviewTitle) {
+            reviewTitle.textContent = filterWrongOnly ? 'Chi Tiết Các Câu Sai' : 'Chi Tiết Từng Câu';
         }
+        
+        if (displayResults.length === 0) {
+            detailsContainer.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Không có câu sai nào!</h3>
+                    <p>Chúc mừng! Bạn đã trả lời đúng tất cả các câu hỏi.</p>
+                </div>
+            `;
+        } else {
+            const questionsHTML = displayResults.map((result) => {
+                const originalIndex = results.findIndex(r => r.question === result.question);
+                const optionsHTML = result.options.map(opt => {
+                    const isUserAnswer = opt.letter === result.userAnswer;
+                    const isCorrectAnswer = opt.letter === result.correctAnswer;
+                    let optionClass = 'result-option';
+                    
+                    if (isCorrectAnswer) {
+                        optionClass += ' correct-option';
+                    }
+                    if (isUserAnswer && !isCorrectAnswer) {
+                        optionClass += ' wrong-option';
+                    }
+                    
+                    return `
+                        <div class="${optionClass}">
+                            <span class="option-letter">${opt.letter}.</span>
+                            <span class="option-text">${opt.text}</span>
+                            ${isCorrectAnswer ? '<i class="fas fa-check-circle correct-icon"></i>' : ''}
+                            ${isUserAnswer && !isCorrectAnswer ? '<i class="fas fa-times-circle wrong-icon"></i>' : ''}
+                            ${isUserAnswer ? '<span class="your-choice-badge">Bạn chọn</span>' : ''}
+                        </div>
+                    `;
+                }).join('');
+                
+                return `
+                    <div class="result-question ${result.isCorrect ? 'correct' : 'incorrect'}">
+                        <div class="result-question-header">
+                            <div class="question-status-badge ${result.isCorrect ? 'correct-badge' : 'incorrect-badge'}">
+                                <i class="fas ${result.isCorrect ? 'fa-check-circle' : 'fa-times-circle'}"></i>
+                                ${result.isCorrect ? 'Đúng' : 'Sai'}
+                            </div>
+                        </div>
+                        <div class="result-question-text">
+                            <strong>Câu ${originalIndex + 1}:</strong> ${result.question}
+                        </div>
+                        <div class="result-options">
+                            ${optionsHTML}
+                        </div>
+                        ${!result.userAnswer ? '<div class="no-answer-notice"><i class="fas fa-exclamation-triangle"></i> Bạn chưa trả lời câu này</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+            
+            detailsContainer.innerHTML = questionsHTML;
+        }
+        
+        reviewSection.style.display = 'block';
+        reviewSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        const message = filterWrongOnly 
+            ? '❌ Đang xem các câu sai' 
+            : '📖 Đang xem lại bài làm';
+        this.showToast(message, 'info');
     }
 
     closeReview() {
@@ -852,18 +886,14 @@ class QuizManager {
     }
 
     startNewQuiz() {
-        // Clear current quiz data to prevent going back
         this.currentQuiz = null;
         this.currentAnswers = {};
         
-        // Switch to quiz tab
         this.switchTab('quiz');
         
-        // Reset quiz selector
         document.getElementById('quiz-selector').value = '';
         document.getElementById('start-quiz').disabled = true;
         
-        // Clear quiz container
         document.getElementById('quiz-container').innerHTML = `
             <div class="quiz-placeholder">
                 <i class="fas fa-clipboard-list"></i>
@@ -901,4 +931,32 @@ class QuizManager {
 let quizManager;
 document.addEventListener('DOMContentLoaded', () => {
     quizManager = new QuizManager();
+    
+    // Initialize scroll to top button
+    initScrollToTop();
 });
+
+// Scroll to top functionality
+function initScrollToTop() {
+    const scrollBtn = document.createElement('button');
+    scrollBtn.id = 'scroll-to-top';
+    scrollBtn.className = 'scroll-to-top';
+    scrollBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
+    scrollBtn.title = 'Cuộn lên đầu trang';
+    document.body.appendChild(scrollBtn);
+    
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            scrollBtn.classList.add('visible');
+        } else {
+            scrollBtn.classList.remove('visible');
+        }
+    });
+    
+    scrollBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
