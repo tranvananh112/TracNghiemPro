@@ -10,7 +10,6 @@ class QuizManager {
         this.initializeEventListeners();
         this.loadQuizList();
         this.updateQuizSelector();
-        this.loadAISettings();
     }
 
     initializeTheme() {
@@ -77,15 +76,6 @@ class QuizManager {
                 const tabName = e.currentTarget.dataset.tab;
                 this.switchTab(tabName);
             });
-        });
-
-        // Paste buttons
-        document.getElementById('paste-questions').addEventListener('click', () => {
-            this.pasteFromClipboard('questions-input');
-        });
-
-        document.getElementById('paste-answers').addEventListener('click', () => {
-            this.pasteFromClipboard('answers-input');
         });
 
         // Quiz creation
@@ -290,28 +280,28 @@ class QuizManager {
         const lines = text.split('\n').map(line => line.trim()).filter(line => line);
         
         for (let line of lines) {
-            // Format: "Câu 1: B" or "Câu 1. B"
-            if (line.match(/^Câu\s+\d+[:：.]\s*[A-Da-d]$/i)) {
-                const answer = line.replace(/^Câu\s+\d+[:：.]\s*/i, '').toUpperCase();
+            // Format: "Câu 1: B" or "Câu 1. B" or "Câu 1 : B" (with spaces)
+            if (line.match(/^Câu\s+\d+\s*[:：.]\s*[A-Da-d]$/i)) {
+                const answer = line.replace(/^Câu\s+\d+\s*[:：.]\s*/i, '').trim().toUpperCase();
                 answers.push(answer);
             }
-            // Format: "1. B" or "1: B"
-            else if (line.match(/^\d+[:：.]\s*[A-Da-d]$/)) {
-                const answer = line.replace(/^\d+[:：.]\s*/, '').toUpperCase();
+            // Format: "1. B" or "1: B" or "1 : B" (with spaces)
+            else if (line.match(/^\d+\s*[:：.]\s*[A-Da-d]$/)) {
+                const answer = line.replace(/^\d+\s*[:：.]\s*/, '').trim().toUpperCase();
                 answers.push(answer);
             }
-            // Format: Just "B"
-            else if (line.match(/^[A-Da-d]$/)) {
+            // Format: Just "B" or " B " (with spaces)
+            else if (line.match(/^[A-Da-d]$/i)) {
                 answers.push(line.toUpperCase());
             }
         }
 
         if (answers.length === 0) {
-            throw new Error('Không tìm thấy đáp án hợp lệ!');
+            throw new Error('Không tìm thấy đáp án hợp lệ! Vui lòng kiểm tra định dạng.');
         }
 
         if (answers.length !== expectedCount) {
-            throw new Error(`Cần ${expectedCount} đáp án, chỉ tìm thấy ${answers.length}!`);
+            throw new Error(`Cần ${expectedCount} đáp án, chỉ tìm thấy ${answers.length}! Vui lòng kiểm tra lại.`);
         }
 
         return answers;
