@@ -1,16 +1,13 @@
 {
-  "name": "quiz-management-system",
+  "name": "hoc-doc-danh-van-gamestva",
   "version": "1.0.0",
-  "description": "Hệ thống trắc nghiệm tự động nhận diện và chấm điểm",
-  "main": "index.html",
+  "description": "Game ghép chữ học đọc tiếng Việt cho bé 3-7 tuổi",
+  "private": true,
   "scripts": {
-    "dev": "http-server -p 3000 -c-1 --cors -a localhost",
-    "start": "http-server -p 8080 -c-1 --cors -a 0.0.0.0"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
-  "dependencies": {
-    "http-server": "^14.1.1"
-  },
-  "keywords": ["quiz", "education", "vietnamese", "student"],
-  "author": "Your Name",
+  "keywords": ["vietnamese", "kids", "education", "spelling", "game"],
+  "author": "",
   "license": "MIT"
 }

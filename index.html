@@ -2,345 +2,539 @@
 <html lang="vi">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Trắc Nghiệm Thông Minh</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <!-- Fallback CDN nếu CDN chính không load được -->
-    <script>
-        // Kiểm tra Font Awesome đã load chưa
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                const testIcon = document.querySelector('.fas');
-                if (testIcon) {
-                    const styles = window.getComputedStyle(testIcon);
-                    const fontFamily = styles.getPropertyValue('font-family');
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://translate.google.com https://*.supabase.co https://api.ipify.org;">
+  <title>Học Đọc - Đánh Vần Gamestva</title>
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="Game ghép chữ học đọc tiếng Việt cho bé 3-7 tuổi">
 
-                    // Nếu Font Awesome chưa load, thử CDN khác
-                    if (!fontFamily.includes('Font Awesome')) {
-                        console.warn('Font Awesome CDN chính không load được, đang thử CDN dự phòng...');
-                        const fallbackLink = document.createElement('link');
-                        fallbackLink.rel = 'stylesheet';
-                        fallbackLink.href = 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css';
-                        document.head.appendChild(fallbackLink);
-                    } else {
-                        console.log('✅ Font Awesome đã load thành công!');
-                    }
-                }
-            }, 500);
-        });
-    </script>
+  <!-- Mobile optimizations -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#667eea">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐝</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Fredoka:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=18">
+  <link rel="stylesheet" href="responsive-fix.css?v=4">
+  <link rel="stylesheet" href="layout-fix.css?v=4">
+  <link rel="stylesheet" href="nav-fix.css?v=1">
 </head>
 
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">
-                <div class="logo-left">
-                    <i class="fas fa-graduation-cap"></i>
-                    <h1>QuizTva Pro</h1>
-                </div>
-                <button class="theme-toggle" id="theme-toggle" title="Chuyển đổi chế độ">
-                    <i class="fas fa-moon"></i>
-                </button>
-            </div>
-            <nav class="nav-tabs">
-                <button class="nav-btn active" data-tab="home">
-                    <i class="fas fa-home"></i>
-                    <span>Trang Chủ</span>
-                </button>
-                <button class="nav-btn" data-tab="input">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Tạo Bài Quiz</span>
-                </button>
-                <button class="nav-btn" data-tab="manage">
-                    <i class="fas fa-list"></i>
-                    <span>Quản Lý Quiz</span>
-                </button>
-                <button class="nav-btn" data-tab="quiz">
-                    <i class="fas fa-play-circle"></i>
-                    <span>Làm Bài</span>
-                </button>
-                <button class="nav-btn" data-tab="results">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Kết Quả</span>
-                </button>
-            </nav>
-        </header>
+  <!-- LOADING SCREEN -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-content">
+      <div class="loading-bee">🐝</div>
+      <div class="loading-text">Đang tải...</div>
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+    </div>
+  </div>
 
-        <!-- Tab Content -->
-        <main class="main-content">
-            <!-- Home Tab -->
-            <section id="home-tab" class="tab-content active">
-                <div class="card">
-                    <div class="home-hero">
-                        <div class="hero-icon">🎓</div>
-                        <h1 class="hero-title">QuizTva Pro</h1>
-                        <p class="hero-subtitle">Hệ thống tạo và quản lý bài trắc nghiệm thông minh, hiện đại và dễ sử dụng</p>
-                    </div>
-
-                    <div class="features-grid">
-                        <div class="feature-card">
-                            <div class="feature-icon"><i class="fas fa-magic"></i></div>
-                            <h3>Tạo Quiz Nhanh Chóng</h3>
-                            <p>Nhập câu hỏi và đáp án theo định dạng đơn giản, hệ thống tự động xử lý và tạo bài quiz chuyên nghiệp</p>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-                            <h3>Quản Lý Thông Minh</h3>
-                            <p>Chỉnh sửa, sao chép, xóa các bài quiz dễ dàng. Lưu trữ không giới hạn trên trình duyệt của bạn</p>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon"><i class="fas fa-bullseye"></i></div>
-                            <h3>Làm Bài Linh Hoạt</h3>
-                            <p>Xáo trộn câu hỏi, theo dõi tiến độ, xem kết quả chi tiết với giao diện đẹp mắt và trực quan</p>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon"><i class="fas fa-moon"></i></div>
-                            <h3>Chế Độ Tối</h3>
-                            <p>Bảo vệ mắt với chế độ tối hiện đại, phù hợp cho việc học tập vào ban đêm</p>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
-                            <h3>Responsive Design</h3>
-                            <p>Hoạt động mượt mà trên mọi thiết bị: máy tính, tablet, điện thoại</p>
-                        </div>
-                        <div class="feature-card">
-                            <div class="feature-icon"><i class="fas fa-save"></i></div>
-                            <h3>Lưu Trữ Cục Bộ</h3>
-                            <p>Dữ liệu được lưu trữ an toàn trên trình duyệt, không cần kết nối internet</p>
-                        </div>
-                    </div>
-
-                    <div class="quick-start">
-                        <h2><i class="fas fa-rocket"></i> Bắt Đầu Ngay</h2>
-                        <p>Chọn chức năng bạn muốn sử dụng</p>
-                        <div class="quick-start-buttons">
-                            <button class="btn btn-primary" onclick="quizManager.switchTab('input')">
-                                <i class="fas fa-plus-circle"></i>
-                                Tạo Bài Quiz Mới
-                            </button>
-                            <button class="btn btn-success" onclick="quizManager.switchTab('quiz')">
-                                <i class="fas fa-play-circle"></i>
-                                Làm Bài Trắc Nghiệm
-                            </button>
-                            <button class="btn btn-secondary" onclick="quizManager.switchTab('manage')">
-                                <i class="fas fa-cogs"></i>
-                                Quản Lý Quiz
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="about-section">
-                        <div class="about-header">
-                            <i class="fas fa-user-circle"></i>
-                            <h2>Về Tác Giả</h2>
-                        </div>
-                        <div class="author-info">
-                            <div class="author-avatar">
-                                👨‍💻
-                            </div>
-                            <div class="author-details">
-                                <h3>Trần Văn Anh</h3>
-                                <div class="author-title">Nhà Phát Triển Web & Lập Trình Viên</div>
-                                <p class="author-description">
-                                    Chào mừng bạn đến với QuizTva Pro! Tôi là Trần Văn Anh, người tạo ra hệ thống này
-                                    với mong muốn mang đến một công cụ học tập hiện đại, dễ sử dụng và hoàn toàn miễn phí
-                                    cho mọi người. Hệ thống được xây dựng với công nghệ web hiện đại, tập trung vào trải
-                                    nghiệm người dùng và hiệu suất tối ưu.
-                                </p>
-                                <div class="author-stats">
-                                    <div class="stat-item">
-                                        <i class="fas fa-code"></i>
-                                        <span>Công nghệ: HTML5, CSS3, JavaScript (ES6+)</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <i class="fas fa-paint-brush"></i>
-                                        <span>Thiết kế: Modern UI/UX với Gradient & Animations</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <i class="fas fa-database"></i>
-                                        <span>Lưu trữ: LocalStorage API - Không cần server</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <i class="fas fa-heart"></i>
-                                        <span>Mục đích: Hỗ trợ học tập và giảng dạy hiệu quả</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="home-footer">
-                        <p>
-                            <i class="fas fa-info-circle"></i>
-                            Phát triển bởi <strong>Trần Văn Anh</strong> - © 2025 QuizTva Pro. All rights reserved.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Input Tab -->
-            <section id="input-tab" class="tab-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-edit"></i> Tạo Bài Quiz Mới</h2>
-                        <p>Nhập câu hỏi và đáp án để tạo bài trắc nghiệm</p>
-                    </div>
-                    <div class="card-body">
-                        <div class="quiz-info">
-                            <input type="text" id="quiz-title" placeholder="Tên bài quiz..." class="quiz-title-input">
-                            <textarea id="quiz-description" placeholder="Mô tả bài quiz (không bắt buộc)..."
-                                class="quiz-description-input"></textarea>
-                        </div>
-
-                        <div class="input-section">
-                            <div class="section-header">
-                                <h3><i class="fas fa-question-circle"></i> Câu Hỏi và Lựa Chọn</h3>
-                                <button class="btn-paste" onclick="quizManager.pasteFromClipboard('questions-input')">
-                                    <i class="fas fa-paste"></i>
-                                    <span>Dán</span>
-                                </button>
-                            </div>
-                            <textarea id="questions-input"
-                                placeholder="Nhập câu hỏi theo format:&#10;&#10;Câu 1: Thủ đô của Việt Nam là gì?&#10;A. Hồ Chí Minh&#10;B. Hà Nội&#10;C. Đà Nẵng&#10;D. Huế&#10;&#10;Câu 2: 2 + 2 = ?&#10;A. 3&#10;B. 4&#10;C. 5&#10;D. 6"></textarea>
-                        </div>
-
-                        <div class="input-section">
-                            <div class="section-header">
-                                <h3><i class="fas fa-check-circle"></i> Đáp Án Đúng</h3>
-                                <button class="btn-paste" onclick="quizManager.pasteFromClipboard('answers-input')">
-                                    <i class="fas fa-paste"></i>
-                                    <span>Dán</span>
-                                </button>
-                            </div>
-                            <textarea id="answers-input"
-                                placeholder="Nhập đáp án theo thứ tự câu hỏi (hỗ trợ nhiều định dạng):&#10;&#10;Câu 1: B&#10;Câu 2: B&#10;&#10;Hoặc:&#10;1. B&#10;2. B&#10;&#10;Hoặc đơn giản:&#10;B&#10;B"></textarea>
-                        </div>
-
-                        <div class="button-group">
-                            <button id="process-quiz" class="btn btn-primary">
-                                <i class="fas fa-magic"></i>
-                                Xử Lý & Tạo Quiz
-                            </button>
-                            <button id="clear-input" class="btn btn-secondary">
-                                <i class="fas fa-trash"></i>
-                                Xóa Hết
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Manage Tab -->
-            <section id="manage-tab" class="tab-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-cogs"></i> Quản Lý Quiz</h2>
-                        <p>Chỉnh sửa, xóa hoặc sao chép các bài quiz đã tạo</p>
-                    </div>
-                    <div class="card-body">
-                        <div id="quiz-list" class="quiz-list">
-                            <div class="empty-state">
-                                <i class="fas fa-folder-open"></i>
-                                <h3>Chưa có quiz nào</h3>
-                                <p>Hãy tạo quiz đầu tiên của bạn!</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Quiz Tab -->
-            <section id="quiz-tab" class="tab-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-play"></i> Làm Bài Trắc Nghiệm</h2>
-                        <p style="margin-top: 10px; opacity: 0.9;">Chọn bài quiz và cấu hình trước khi bắt đầu</p>
-                        <div class="quiz-controls">
-                            <div class="quiz-control-group">
-                                <label style="display: block; margin-bottom: 8px; font-size: 14px; opacity: 0.9;">
-                                    <i class="fas fa-clipboard-list"></i> Chọn bài quiz:
-                                </label>
-                                <select id="quiz-selector" class="quiz-selector">
-                                    <option value="">-- Chọn bài quiz để làm --</option>
-                                </select>
-                            </div>
-                            <div class="quiz-control-group">
-                                <label class="shuffle-option" title="Thứ tự câu hỏi sẽ được xáo trộn ngẫu nhiên">
-                                    <input type="checkbox" id="shuffle-questions">
-                                    <i class="fas fa-random"></i>
-                                    <span>Xáo trộn câu hỏi</span>
-                                </label>
-                            </div>
-                            <button id="start-quiz" class="btn btn-success" disabled>
-                                <i class="fas fa-play"></i>
-                                Bắt Đầu Làm Bài
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div id="quiz-container" class="quiz-container">
-                            <div class="quiz-placeholder">
-                                <i class="fas fa-clipboard-list"></i>
-                                <h3>Sẵn sàng làm bài?</h3>
-                                <p>Chọn một bài quiz và bấm "Bắt Đầu" để bắt đầu làm bài</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Results Tab -->
-            <section id="results-tab" class="tab-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h2><i class="fas fa-trophy"></i> Kết Quả Làm Bài</h2>
-                        <p>Xem điểm số và đáp án chi tiết</p>
-                    </div>
-                    <div class="card-body">
-                        <div id="results-container" class="results-container">
-                            <div class="results-placeholder">
-                                <i class="fas fa-chart-line"></i>
-                                <h3>Chưa có kết quả nào</h3>
-                                <p>Hoàn thành một bài quiz để xem kết quả</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
+  <!-- THANH ĐIỀU HƯỚNG CHÍNH -->
+  <nav class="main-navbar" id="mainNavbar">
+    <div class="nav-brand">
+      <span class="nav-logo">🐝</span>
+      <span class="nav-title">Gamestva</span>
     </div>
 
-    <!-- Modal for editing quiz -->
-    <div id="edit-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-edit"></i> Chỉnh Sửa Quiz</h3>
-                <button class="modal-close">&times;</button>
+    <div class="nav-menu">
+      <button class="nav-item active" data-page="home">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">Trang chủ</span>
+      </button>
+      <button class="nav-item" data-page="play">
+        <span class="nav-icon">🎮</span>
+        <span class="nav-text">Chơi game</span>
+      </button>
+      <button class="nav-item" data-page="shop">
+        <span class="nav-icon">🏪</span>
+        <span class="nav-text">Cửa hàng</span>
+      </button>
+      <button class="nav-item" data-page="profile">
+        <span class="nav-icon">📖</span>
+        <span class="nav-text">Sổ bé giỏi</span>
+      </button>
+      <button class="nav-item" data-page="parent">
+        <span class="nav-icon">👨‍👩‍👧</span>
+        <span class="nav-text">Phụ huynh</span>
+      </button>
+    </div>
+
+    <div class="nav-user">
+      <button class="audio-unlock-btn" id="audioUnlockBtn" title="Bật âm thanh">
+        🔇
+      </button>
+      <span class="user-coins">🪙 <span id="navCoins">0</span></span>
+      <span class="user-stars">⭐ <span id="navStars">0</span></span>
+      <span class="user-avatar" id="navAvatar">🐝</span>
+    </div>
+  </nav>
+
+  <!-- CONTAINER CHÍNH -->
+  <main class="main-content">
+
+    <!-- TRANG CHỦ -->
+    <section class="page page-home active" id="pageHome">
+      <div class="home-hero">
+        <div class="hero-mascot">🐝</div>
+        <h1 class="hero-title">Học Đọc - Đánh Vần</h1>
+        <p class="hero-subtitle">Cùng bé học ghép chữ tiếng Việt!</p>
+
+        <div class="hero-setup">
+          <div class="setup-avatars">
+            <p>Chọn hình đại diện:</p>
+            <div class="avatar-grid">
+              <button class="avatar-btn selected" data-avatar="🐝">🐝</button>
+              <button class="avatar-btn" data-avatar="🐰">🐰</button>
+              <button class="avatar-btn" data-avatar="🐱">🐱</button>
+              <button class="avatar-btn" data-avatar="🦊">🦊</button>
+              <button class="avatar-btn" data-avatar="🐻">🐻</button>
+              <button class="avatar-btn" data-avatar="🦁">🦁</button>
             </div>
-            <div class="modal-body">
-                <input type="text" id="edit-title" placeholder="Tên quiz..." class="modal-input">
-                <textarea id="edit-description" placeholder="Mô tả..." class="modal-textarea"></textarea>
-                <div id="edit-questions" class="edit-questions"></div>
-            </div>
-            <div class="modal-footer">
-                <button id="save-edit" class="btn btn-primary">
-                    <i class="fas fa-save"></i>
-                    Lưu Thay Đổi
-                </button>
-                <button id="cancel-edit" class="btn btn-secondary">
-                    <i class="fas fa-times"></i>
-                    Hủy
-                </button>
-            </div>
+          </div>
+          <div class="setup-name">
+            <input type="text" id="playerName" placeholder="Tên của bé..." maxlength="20">
+          </div>
         </div>
-    </div>
 
-    <script src="script.js"></script>
+        <button class="btn-play-big" id="btnStartGame">
+          <span>🎮</span> Bắt đầu chơi!
+        </button>
+      </div>
+
+      <!-- Chọn chủ đề -->
+      <div class="theme-selection">
+        <h2>📚 Chọn chủ đề học</h2>
+        <p class="theme-subtitle">Chủ đề hiện tại: <span id="currentThemeName">Động vật</span> <span
+            id="currentThemeIcon">🐾</span></p>
+        <div class="themes-grid-home" id="themesGridHome">
+          <!-- Themes sẽ được tạo bằng JS -->
+        </div>
+      </div>
+
+      <!-- Chọn cấp độ -->
+      <div class="level-selection">
+        <h2>Chọn cấp độ</h2>
+        <div class="level-grid">
+          <div class="level-box level-1" data-level="1">
+            <div class="level-badge">�</div>
+            <h3>Cấp 1</h3>
+            <p>Từ 2-3 chữ</p>
+            <span class="level-example">ba, mẹ, cá...</span>
+            <div class="level-progress-bar">
+              <div class="progress" id="homeProgress1"></div>
+            </div>
+          </div>
+          <div class="level-box level-2" data-level="2">
+            <div class="level-badge">�</div>>
+            <h3>Cấp 2</h3>
+            <p>Từ 4+ chữ</p>
+            <span class="level-example">con voi, bầu trời...</span>
+            <div class="level-progress-bar">
+              <div class="progress" id="homeProgress2"></div>
+            </div>
+          </div>
+          <div class="level-box level-3" data-level="3">
+            <div class="level-badge">🌳</div>
+            <h3>Cấp 3</h3>
+            <p>Câu ngắn</p>
+            <span class="level-example">bé ăn cơm...</span>
+            <div class="level-progress-bar">
+              <div class="progress" id="homeProgress3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRANG CHƠI GAME -->
+    <section class="page page-play" id="pagePlay">
+      <div class="game-area">
+        <!-- Thông tin game -->
+        <div class="game-info-bar">
+          <span class="info-level">Cấp <span id="gameLevel">1</span></span>
+          <span class="info-word">Từ <span id="gameWordNum">1</span>/<span id="gameTotalWords">10</span></span>
+          <span class="info-stars">⭐ <span id="gameStars">0</span></span>
+        </div>
+
+        <!-- Khu vực hình ảnh và từ -->
+        <div class="game-display">
+          <div class="image-box">
+            <div class="word-image" id="wordImage">🐱</div>
+            <div class="image-label" id="imageLabel">Con mèo</div>
+          </div>
+
+          <div class="instruction-text" id="instructionText">
+            Bé hãy ghép chữ nhé! 💪
+          </div>
+        </div>
+
+        <!-- Ô ghép chữ -->
+        <div class="slots-area">
+          <div class="word-slots" id="wordSlots">
+            <!-- Slots sẽ được tạo bằng JS -->
+          </div>
+        </div>
+
+        <!-- Chữ cái để kéo -->
+        <div class="letters-area">
+          <div class="letters-pool" id="lettersPool">
+            <!-- Letters sẽ được tạo bằng JS -->
+          </div>
+        </div>
+
+        <!-- Chuyển chế độ -->
+        <div class="mode-switcher">
+          <button class="mode-btn active" id="btnModeWord" data-mode="word">
+            <span>🔤</span> Ghép chữ
+            <button class="mode-btn" id="btnModeSentence" data-mode="sentence">
+              <span>📝</span> Ghép câu
+        </div>
+
+        <!-- Nút điều khiển -->
+        <div class="game-buttons">
+          <button class="game-btn btn-hint" id="btnHint">
+            <span>💡</span> Gợi ý
+          </button>
+          <button class="game-btn btn-speak" id="btnSpeak">
+            <span>🔊</span> Nghe
+          </button>
+          <button class="game-btn btn-skip" id="btnSkip">
+            <span>⏭️</span> Bỏ qua
+          </button>
+          <button class="game-btn btn-exit-lesson" id="btnExitLesson" style="display: none;">
+            <span>🏠</span> Thoát bài học
+          </button>
+        </div>
+      </div>
+
+      <!-- Popup thành công -->
+      <div class="success-popup" id="successPopup">
+        <div class="popup-content">
+          <div class="popup-stars">⭐⭐⭐</div>
+          <h2>Giỏi quá! 🎉</h2>
+          <div class="popup-word" id="successWord">MÈO</div>
+          <div class="popup-character" id="successCharacter">🐱</div>
+          <div class="countdown-timer" id="countdownTimer">
+            <span class="countdown-text">Chuyển câu sau</span>
+            <span class="countdown-number" id="countdownNumber">4</span>
+            <span class="countdown-text">giây</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Container cho animation nhân vật -->
+      <div class="character-animation-container" id="characterAnimationContainer"></div>
+
+      <!-- Confetti -->
+      <div class="confetti-container" id="confettiContainer"></div>
+    </section>
+
+    <!-- TRANG CỬA HÀNG -->
+    <section class="page page-shop" id="pageShop">
+      <div class="shop-header">
+        <h1 class="shop-title">🏪 Cửa Hàng Đổi Quà</h1>
+        <div class="shop-balance">
+          <div class="balance-item">
+            <span class="balance-icon">🪙</span>
+            <span class="balance-label">Xu của bé:</span>
+            <span class="balance-value" id="shopCoins">0</span>
+          </div>
+          <div class="balance-item">
+            <span class="balance-icon">⭐</span>
+            <span class="balance-label">Sao:</span>
+            <span class="balance-value" id="shopStars">0</span>
+          </div>
+        </div>
+        <p class="shop-desc">Làm đúng 1 câu = 1 xu 🪙 | 10 sao = 5 xu 🪙</p>
+      </div>
+
+      <div class="shop-categories" id="shopCategories">
+        <!-- Categories will be loaded by JS -->
+      </div>
+
+      <div class="shop-items-grid" id="shopItemsGrid">
+        <!-- Items will be loaded by JS -->
+      </div>
+    </section>
+
+    <!-- TRANG SỔ BÉ GIỎI -->
+    <section class="page page-profile" id="pageProfile">
+      <div class="profile-header">
+        <div class="profile-avatar-big" id="profileAvatar">🐝</div>
+        <h2 id="profileName">Bé</h2>
+        <div class="profile-stats-row">
+          <div class="stat-box">
+            <span class="stat-num" id="statWords">0</span>
+            <span class="stat-label">Từ đã học</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="statStars">0</span>
+            <span class="stat-label">Ngôi sao</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="statBadges">0</span>
+            <span class="stat-label">Huy hiệu</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-sections">
+        <div class="profile-section">
+          <h3>🏆 Huy hiệu</h3>
+          <div class="badges-row" id="badgesRow"></div>
+        </div>
+
+        <div class="profile-section">
+          <h3>📚 Từ đã học</h3>
+          <div class="learned-words-grid" id="learnedWordsGrid"></div>
+        </div>
+
+        <div class="profile-section">
+          <h3>🎨 Bộ sưu tập Sticker</h3>
+          <div class="stickers-row" id="stickersRow"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRANG PHỤ HUYNH -->
+    <section class="page page-parent" id="pageParent">
+      <h2 class="parent-title">👨‍👩‍👧 Chế độ Phụ huynh</h2>
+
+      <!-- Tabs -->
+      <div class="parent-tabs">
+        <button class="parent-tab active" data-tab="stats">📊 Thống kê</button>
+        <button class="parent-tab" data-tab="words">📖 Từ đã học</button>
+        <button class="parent-tab" data-tab="custom">✏️ Soạn từ</button>
+        <button class="parent-tab" data-tab="control">⏰ Giới hạn</button>
+        <button class="parent-tab" data-tab="themes">📚 Chủ đề</button>
+      </div>
+
+      <!-- Tab: Thống kê -->
+      <div class="parent-tab-content active" id="tabStats">
+        <div class="parent-stats-grid">
+          <div class="parent-stat-card">
+            <span class="stat-icon">📖</span>
+            <span class="stat-value" id="parentWords">0</span>
+            <span class="stat-text">Từ đã học</span>
+          </div>
+          <div class="parent-stat-card">
+            <span class="stat-icon">⏱️</span>
+            <span class="stat-value" id="parentTime">0</span>
+            <span class="stat-text">Phút chơi</span>
+          </div>
+          <div class="parent-stat-card">
+            <span class="stat-icon">🎯</span>
+            <span class="stat-value" id="parentAccuracy">~</span>
+            <span class="stat-text">Độ chính xác</span>
+          </div>
+          <div class="parent-stat-card">
+            <span class="stat-icon">🏆</span>
+            <span class="stat-value" id="parentMaxLevel">1</span>
+            <span class="stat-text">Cấp cao nhất</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Từ đã học -->
+      <div class="parent-tab-content" id="tabWords">
+        <div class="words-learned-header">
+          <h3>📖 Danh sách từ đã học</h3>
+          <button class="btn-export" id="btnExportWords">📥 Xuất danh sách</button>
+        </div>
+        <div class="words-learned-list" id="wordsLearnedList">
+          <!-- Sẽ được load bằng JS -->
+        </div>
+      </div>
+
+      <!-- Tab: Soạn từ tùy chỉnh -->
+      <div class="parent-tab-content" id="tabCustom">
+        <div class="custom-word-form">
+          <h3>✏️ Soạn từ/câu mới cho bé</h3>
+          <p class="form-desc">Tạo từ vựng hoặc câu riêng phù hợp với bé của bạn</p>
+
+          <div class="form-group">
+            <label>Chế độ học:</label>
+            <select id="learningModeToggle" class="mode-select">
+              <option value="word">🔤 Ghép chữ (từ đơn)</option>
+              <option value="sentence">📝 Ghép câu</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="customWordInput">Từ cần học:</label>
+            <input type="text" id="customWordInput" placeholder="Ví dụ: con mèo" maxlength="50">
+          </div>
+
+          <div class="form-group">
+            <label>Chọn icon theo danh mục:</label>
+            <div class="icon-categories" id="iconCategories">
+              <!-- Categories sẽ được load bằng JS -->
+            </div>
+            <div class="icon-picker" id="iconPicker">
+              <!-- Icons sẽ được load bằng JS -->
+            </div>
+            <div class="selected-icon" id="selectedIcon">🐱</div>
+          </div>
+
+          <div class="form-group">
+            <label for="customSyllablesInput">Chia âm tiết:</label>
+            <input type="text" id="customSyllablesInput" placeholder="Ví dụ: con mèo" maxlength="50">
+            <small>Để trống sẽ tự động chia theo khoảng trắng</small>
+          </div>
+
+          <button class="btn-add-word" id="btnAddCustomWord">➕ Thêm từ/câu</button>
+        </div>
+
+        <div class="custom-words-list">
+          <div class="words-header">
+            <h3>📝 Từ đã soạn (<span id="customWordCount">0</span>)</h3>
+            <button class="btn-create-lesson" id="btnCreateLesson">📚 Tạo bài học</button>
+          </div>
+          <div id="customWordsList">
+            <!-- Custom words sẽ được load bằng JS -->
+          </div>
+        </div>
+
+        <div class="custom-lessons-list">
+          <h3>📚 Bài học tùy chỉnh</h3>
+          <p class="lessons-desc">Các bài học được tạo từ từ/câu bạn đã soạn</p>
+          <div id="customLessonsList">
+            <!-- Custom lessons sẽ được load bằng JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Giới hạn thời gian -->
+      <div class="parent-tab-content" id="tabControl">
+        <div class="time-control">
+          <h3>⏰ Giới hạn thời gian chơi</h3>
+          <p class="control-desc">Đặt thời gian chơi mỗi ngày để bảo vệ mắt bé</p>
+
+          <div class="control-toggle">
+            <label class="switch">
+              <input type="checkbox" id="timeLimitToggle">
+              <span class="slider"></span>
+            </label>
+            <span>Bật giới hạn thời gian</span>
+          </div>
+
+          <div class="control-settings" id="timeLimitSettings" style="display: none;">
+            <div class="form-group">
+              <label>Thời gian chơi mỗi ngày (phút):</label>
+              <input type="number" id="timeLimitInput" min="5" max="180" value="30" step="5">
+              <div class="time-presets">
+                <button class="preset-btn" data-minutes="15">15 phút</button>
+                <button class="preset-btn" data-minutes="30">30 phút</button>
+                <button class="preset-btn" data-minutes="60">60 phút</button>
+                <button class="preset-btn" data-minutes="120">120 phút</button>
+              </div>
+            </div>
+
+            <div class="time-status">
+              <p>⏱️ Thời gian đã chơi hôm nay: <strong id="timePlayedToday">0</strong> phút</p>
+              <p>⏳ Thời gian còn lại: <strong id="timeRemaining">30</strong> phút</p>
+            </div>
+
+            <button class="btn-save-time" id="btnSaveTimeLimit">💾 Lưu cài đặt</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Chọn chủ đề -->
+      <div class="parent-tab-content" id="tabThemes">
+        <div class="parent-themes">
+          <h3>📚 Chọn chủ đề học cho bé</h3>
+          <p class="theme-desc">Chọn chủ đề phù hợp với sở thích và độ tuổi của bé</p>
+          <div class="themes-grid" id="themesGrid">
+            <!-- Themes will be loaded by JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="parent-actions">
+        <button class="btn-reset" id="btnResetProgress">🔄 Đặt lại tiến độ</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- BÉ ONG MASCOT -->
+  <div class="bee-mascot" id="beeMascot">
+    <div class="bee-body bee-character">🐝</div>
+    <div class="bee-speech" id="beeSpeech">Chào bé yêu! 🌸</div>
+  </div>
+
+  <!-- KHO BÁU -->
+  <div class="treasure-modal" id="treasureModal">
+    <div class="treasure-box">
+      <h2>🎁 Kho Báu!</h2>
+      <p>Chọn một sticker nhé!</p>
+      <div class="treasure-stickers">
+        <button class="sticker-pick" data-sticker="🐰">🐰</button>
+        <button class="sticker-pick" data-sticker="🐻">🐻</button>
+        <button class="sticker-pick" data-sticker="🦖">🦖</button>
+        <button class="sticker-pick" data-sticker="🦄">🦄</button>
+        <button class="sticker-pick" data-sticker="🐼">🐼</button>
+        <button class="sticker-pick" data-sticker="🦋">🦋</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIO WELCOME MODAL -->
+  <div class="audio-welcome-modal" id="audioWelcomeModal">
+    <div class="audio-welcome-box">
+      <div class="audio-icon">🔊</div>
+      <h2>Chào bé yêu! 👋</h2>
+      <p>Nhấn nút bên dưới để bật âm thanh và bắt đầu học nhé!</p>
+      <button class="btn-enable-audio" id="btnEnableAudio">
+        🔊 Bật âm thanh
+      </button>
+      <button class="btn-skip-audio" id="btnSkipAudio">
+        Bỏ qua
+      </button>
+    </div>
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js?v=30"></script>
+  <script src="tracking-helper.js?v=1"></script>
+  <script src="auto-tracking.js?v=1"></script>
+
+  <script src="mobile-optimizer.js?v=21"></script>
+  <script src="audio-manager.js?v=24"></script>
+  <script src="word-themes.js?v=21"></script>
+  <script src="sentence-data.js?v=20"></script>
+  <!-- CELEBRATION OVERLAY - Hiệu ứng chuyển câu -->
+  <div class="celebration-overlay" id="celebrationOverlay">
+    <div class="celebration-content">
+      <div class="celebration-title" id="celebrationTitle">🎉 Giỏi lắm! 🎉</div>
+      <div class="celebration-animals" id="celebrationAnimals"></div>
+      <div class="celebration-message" id="celebrationMessage">Chuẩn bị câu tiếp theo...</div>
+      <div class="celebration-stars">⭐✨⭐✨⭐</div>
+      <div class="countdown-timer" id="countdownTimer"></div>
+    </div>
+  </div>
+
+  <script src="shop-data.js?v=20"></script>
+  <script src="parent-controls.js?v=20"></script>
+  <script src="parent-page.js?v=20"></script>
+  <script src="sound-effects.js?v=20"></script>
+  <script src="animal-sounds.js?v=1"></script>
+  <script src="animations.js?v=20"></script>
+  <script src="main.js?v=32"></script>
 </body>
 
 </html>
