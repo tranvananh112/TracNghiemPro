@@ -1,0 +1,50 @@
+/* Layout Fix - Remove top spacing caused by disabled top navbar */
+
+/* Override margin-top from style-topnav.css */
+.app-layout {
+    margin-top: 0 !important;
+}
+
+/* Ensure body has no extra spacing */
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Ensure main layout starts from top */
+.main-wrapper {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Fix sidebar position - override style-sidebar-horizontal.css */
+.sidebar {
+    top: 0 !important;
+}
+
+/* Fix main content area */
+.main-content-area {
+    padding-top: 20px;
+}
+
+/* Override any top navbar spacing */
+@media (min-width: 901px) {
+    .sidebar {
+        top: 0 !important;
+    }
+}
+
+/* Ensure no hidden elements taking up space */
+.top-navbar {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.hero-section {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}

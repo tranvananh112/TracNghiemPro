@@ -1,0 +1,220 @@
+/* ============================================================================
+   HORIZONTAL LAYOUT - Chuyển sidebar dọc thành menu ngang
+   ============================================================================ */
+
+/* Ẩn sidebar cũ trên desktop nhưng vẫn giữ trong DOM để xử lý logic */
+@media (min-width: 901px) {
+    .sidebar {
+        position: fixed;
+        left: -300px;
+        opacity: 0;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    .mobile-menu-toggle {
+        display: none !important;
+    }
+    
+    .sidebar-overlay {
+        display: none !important;
+    }
+}
+
+/* Layout mới - Full width */
+.app-layout {
+    display: block !important;
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+.main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+/* Top navbar đã có sẵn, chỉ cần điều chỉnh */
+.top-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+/* Secondary navigation - Menu chức năng ngang */
+.secondary-nav {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    z-index: 999;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.secondary-nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.secondary-nav-container::-webkit-scrollbar {
+    display: none;
+}
+
+.secondary-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 20px;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.secondary-nav-item:hover {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.secondary-nav-item.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    font-weight: 600;
+}
+
+.secondary-nav-item i {
+    font-size: 16px;
+}
+
+/* Adjust main content for new layout */
+.main-content-area {
+    margin-top: 140px !important; /* 70px top nav + 70px secondary nav */
+    padding: 24px 40px;
+}
+
+/* Personal section dropdown */
+.personal-dropdown {
+    position: relative;
+}
+
+.personal-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 20px;
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.personal-dropdown-toggle:hover {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.personal-dropdown-toggle.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+}
+
+.personal-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    min-width: 220px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    margin-top: 4px;
+}
+
+.personal-dropdown-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.personal-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #64748b;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.personal-dropdown-item:hover {
+    background: rgba(102, 126, 234, 0.05);
+    color: #667eea;
+}
+
+.personal-dropdown-item i {
+    font-size: 16px;
+    width: 20px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .secondary-nav-container {
+        padding: 0 30px;
+    }
+    
+    .main-content-area {
+        padding: 24px 30px;
+    }
+}
+
+@media (max-width: 900px) {
+    /* Trên mobile vẫn dùng sidebar như cũ */
+    .sidebar {
+        display: block !important;
+    }
+    
+    .secondary-nav {
+        display: none !important;
+    }
+    
+    .main-content-area {
+        margin-top: 60px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .secondary-nav-container {
+        padding: 0 20px;
+    }
+    
+    .main-content-area {
+        padding: 16px 20px;
+    }
+}
+
+/* Smooth transitions */
+* {
+    transition: margin 0.3s ease, padding 0.3s ease;
+}

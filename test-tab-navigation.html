@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Tab Navigation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        
+        .test-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+        }
+        
+        .test-section h2 {
+            color: #334155;
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .test-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .test-item:hover {
+            background: #e2e8f0;
+        }
+        
+        .test-item.success {
+            background: #dcfce7;
+            border-left: 4px solid #22c55e;
+        }
+        
+        .test-item.error {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .test-item.pending {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .status-icon {
+            font-size: 20px;
+        }
+        
+        .test-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        
+        .test-result {
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #334155;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+        
+        .console-output {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .console-line {
+            margin-bottom: 5px;
+        }
+        
+        .console-line.success {
+            color: #4ade80;
+        }
+        
+        .console-line.error {
+            color: #f87171;
+        }
+        
+        .console-line.warning {
+            color: #fbbf24;
+        }
+        
+        .console-line.info {
+            color: #60a5fa;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test Tab Navigation System</h1>
+        <p class="subtitle">Kiểm tra xem tất cả các chức năng navigation có hoạt động đúng không</p>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="total-tests">0</div>
+                <div class="stat-label">Tổng số test</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="passed-tests" style="color: #22c55e;">0</div>
+                <div class="stat-label">Passed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="failed-tests" style="color: #ef4444;">0</div>
+                <div class="stat-label">Failed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pending-tests" style="color: #f59e0b;">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <button class="btn btn-primary" onclick="runAllTests()">▶️ Chạy Tất Cả Tests</button>
+            <button class="btn btn-secondary" onclick="clearResults()">🗑️ Xóa Kết Quả</button>
+            <button class="btn btn-secondary" onclick="openMainApp()">🚀 Mở Ứng Dụng Chính</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>📋 File Checks</h2>
+            <div id="file-tests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 Manager Initialization</h2>
+            <div id="manager-tests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🎯 Tab Navigation</h2>
+            <div id="tab-tests"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📱 Personal Menu</h2>
+            <div id="personal-tests"></div>
+        </div>
+        
+        <div class="console-output" id="console-output">
+            <div class="console-line info">Console output will appear here...</div>
+        </div>
+    </div>
+    
+    <script>
+        let testResults = {
+            total: 0,
+            passed: 0,
+            failed: 0,
+            pending: 0
+        };
+        
+        function log(message, type = 'info') {
+            const output = document.getElementById('console-output');
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function updateStats() {
+            document.getElementById('total-tests').textContent = testResults.total;
+            document.getElementById('passed-tests').textContent = testResults.passed;
+            document.getElementById('failed-tests').textContent = testResults.failed;
+            document.getElementById('pending-tests').textContent = testResults.pending;
+        }
+        
+        function addTestResult(containerId, testName, status, message = '') {
+            const container = document.getElementById(containerId);
+            const item = document.createElement('div');
+            item.className = `test-item ${status}`;
+            
+            const icon = status === 'success' ? '✅' : status === 'error' ? '❌' : '⏳';
+            
+            item.innerHTML = `
+                <span class="status-icon">${icon}</span>
+                <span class="test-name">${testName}</span>
+                <span class="test-result">${message}</span>
+            `;
+            
+            container.appendChild(item);
+            
+            testResults.total++;
+            if (status === 'success') testResults.passed++;
+            else if (status === 'error') testResults.failed++;
+            else testResults.pending++;
+            
+            updateStats();
+        }
+        
+        async function checkFileExists(filename) {
+            try {
+                const response = await fetch(filename, { method: 'HEAD' });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        async function runFileTests() {
+            log('🔍 Checking required files...', 'info');
+            
+            const files = [
+                'fix-tab-navigation.js',
+                'style-tab-fix.css',
+                'script.js',
+                'personal-menu.js',
+                'explore-quiz.js',
+                'room-manager.js'
+            ];
+            
+            for (const file of files) {
+                const exists = await checkFileExists(file);
+                if (exists) {
+                    addTestResult('file-tests', file, 'success', 'Found');
+                    log(`✅ ${file} exists`, 'success');
+                } else {
+                    addTestResult('file-tests', file, 'error', 'Not found');
+                    log(`❌ ${file} not found`, 'error');
+                }
+            }
+        }
+        
+        function runManagerTests() {
+            log('🔍 Checking manager initialization...', 'info');
+            
+            const managers = [
+                { name: 'quizManager', global: 'quizManager' },
+                { name: 'personalMenuManager', global: 'personalMenuManager' },
+                { name: 'exploreQuizManager', global: 'exploreQuizManager' },
+                { name: 'roomManager', global: 'roomManager' }
+            ];
+            
+            // Open main app in iframe to test
+            const iframe = document.createElement('iframe');
+            iframe.src = 'index.html';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            
+            setTimeout(() => {
+                managers.forEach(manager => {
+                    try {
+                        const exists = iframe.contentWindow[manager.global];
+                        if (exists) {
+                            addTestResult('manager-tests', manager.name, 'success', 'Initialized');
+                            log(`✅ ${manager.name} initialized`, 'success');
+                        } else {
+                            addTestResult('manager-tests', manager.name, 'error', 'Not initialized');
+                            log(`❌ ${manager.name} not initialized`, 'error');
+                        }
+                    } catch (error) {
+                        addTestResult('manager-tests', manager.name, 'error', 'Error: ' + error.message);
+                        log(`❌ ${manager.name} error: ${error.message}`, 'error');
+                    }
+                });
+                
+                document.body.removeChild(iframe);
+            }, 3000);
+        }
+        
+        function runTabTests() {
+            log('🔍 Checking tab navigation...', 'info');
+            
+            const tabs = [
+                'home', 'input', 'ai-quiz', 'room', 'explore', 
+                'manage', 'quiz', 'results', 'analytics',
+                'my-library', 'recent-access', 'favorites', 'my-results'
+            ];
+            
+            tabs.forEach(tab => {
+                // Check if tab element exists
+                const tabElement = document.querySelector(`#${tab}-tab`);
+                if (tabElement) {
+                    addTestResult('tab-tests', `${tab}-tab`, 'success', 'Element exists');
+                    log(`✅ Tab ${tab} exists`, 'success');
+                } else {
+                    addTestResult('tab-tests', `${tab}-tab`, 'pending', 'Check in main app');
+                    log(`⏳ Tab ${tab} - check in main app`, 'warning');
+                }
+            });
+        }
+        
+        function runPersonalMenuTests() {
+            log('🔍 Checking personal menu...', 'info');
+            
+            const tests = [
+                'Personal menu toggle',
+                'My library rendering',
+                'Recent access tracking',
+                'Favorites management',
+                'Results history'
+            ];
+            
+            tests.forEach(test => {
+                addTestResult('personal-tests', test, 'pending', 'Manual test required');
+                log(`⏳ ${test} - requires manual testing`, 'warning');
+            });
+        }
+        
+        async function runAllTests() {
+            clearResults();
+            log('🚀 Starting all tests...', 'info');
+            
+            await runFileTests();
+            runManagerTests();
+            runTabTests();
+            runPersonalMenuTests();
+            
+            log('✅ All tests completed!', 'success');
+        }
+        
+        function clearResults() {
+            document.getElementById('file-tests').innerHTML = '';
+            document.getElementById('manager-tests').innerHTML = '';
+            document.getElementById('tab-tests').innerHTML = '';
+            document.getElementById('personal-tests').innerHTML = '';
+            document.getElementById('console-output').innerHTML = '<div class="console-line info">Console cleared...</div>';
+            
+            testResults = { total: 0, passed: 0, failed: 0, pending: 0 };
+            updateStats();
+        }
+        
+        function openMainApp() {
+            window.open('index.html', '_blank');
+        }
+        
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            log('🎯 Test page loaded', 'info');
+            log('Click "Chạy Tất Cả Tests" to start testing', 'info');
+        });
+    </script>
+</body>
+</html>

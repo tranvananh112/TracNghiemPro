@@ -1,0 +1,116 @@
+/* Tab Content Fix - Ensure tabs show/hide properly */
+
+/* Hide all tab contents by default */
+.tab-content {
+    display: none;
+    opacity: 0;
+    animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+/* Show active tab */
+.tab-content.active {
+    display: block;
+    opacity: 1;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ensure main content area has proper layout */
+.main-content-area {
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Page header styling */
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary, #1e293b);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-title i {
+    color: var(--primary-color, #667eea);
+}
+
+/* Empty state styling */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary, #64748b);
+}
+
+.empty-state i {
+    font-size: 64px;
+    color: var(--text-tertiary, #94a3b8);
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-primary, #1e293b);
+}
+
+.empty-state p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* Loading state */
+.loading-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--border-color, #e2e8f0);
+    border-top-color: var(--primary-color, #667eea);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Dark mode support */
+body.dark-mode .page-title {
+    color: #f1f5f9;
+}
+
+body.dark-mode .empty-state h3 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .empty-state i {
+    color: #475569;
+}
+
+body.dark-mode .loading-spinner {
+    border-color: #334155;
+    border-top-color: #667eea;
+}

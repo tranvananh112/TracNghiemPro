@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Room System - Offline & Cloud</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .test-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .test-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+        }
+        .test-card h3 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .result {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .result.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .badge.cloud {
+            background: #10b981;
+            color: white;
+        }
+        .badge.offline {
+            background: #f59e0b;
+            color: white;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            🧪 Test Room System
+            <span class="badge offline">💾 Offline Mode</span>
+        </h1>
+        <p class="subtitle">
+            Test hệ thống phòng thi với chế độ Offline và Cloud
+        </p>
+
+        <!-- Test 1: Create Offline Room -->
+        <div class="test-section">
+            <h2>📝 Test 1: Tạo Phòng Offline</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Tạo phòng mới</h3>
+                    <input type="text" id="room-name" placeholder="Tên phòng..." value="Test Room 1">
+                    <input type="text" id="room-code" placeholder="Mã phòng (6 số)..." value="123456">
+                    <button onclick="testCreateOfflineRoom()">
+                        💾 Tạo Phòng Offline
+                    </button>
+                    <div id="result-create" class="result" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 2: Load Rooms -->
+        <div class="test-section">
+            <h2>📂 Test 2: Load Danh Sách Phòng</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Load từ localStorage</h3>
+                    <button onclick="testLoadRooms()">
+                        📂 Load Rooms
+                    </button>
+                    <div id="result-load" class="result" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 3: Join Room -->
+        <div class="test-section">
+            <h2>🚪 Test 3: Vào Phòng</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Join bằng mã</h3>
+                    <input type="text" id="join-code" placeholder="Nhập mã phòng..." value="123456">
+                    <button onclick="testJoinRoom()">
+                        🚪 Join Room
+                    </button>
+                    <div id="result-join" class="result" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 4: Delete Room -->
+        <div class="test-section">
+            <h2>🗑️ Test 4: Xóa Phòng</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Xóa phòng offline</h3>
+                    <input type="text" id="delete-code" placeholder="Mã phòng cần xóa..." value="123456">
+                    <button onclick="testDeleteRoom()">
+                        🗑️ Delete Room
+                    </button>
+                    <div id="result-delete" class="result" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 5: Clear All -->
+        <div class="test-section">
+            <h2>🧹 Test 5: Xóa Tất Cả</h2>
+            <div class="test-grid">
+                <div class="test-card">
+                    <h3>Reset localStorage</h3>
+                    <button onclick="testClearAll()" style="background: #dc2626;">
+                        🧹 Clear All Data
+                    </button>
+                    <div id="result-clear" class="result" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test Functions
+        function testCreateOfflineRoom() {
+            const resultDiv = document.getElementById('result-create');
+            const roomName = document.getElementById('room-name').value;
+            const roomCode = document.getElementById('room-code').value;
+
+            try {
+                // Validate
+                if (!roomName || !roomCode) {
+                    throw new Error('Vui lòng nhập đầy đủ thông tin!');
+                }
+
+                if (roomCode.length !== 6 || !/^\d{6}$/.test(roomCode)) {
+                    throw new Error('Mã phòng phải là 6 chữ số!');
+                }
+
+                // Get existing rooms
+                const rooms = JSON.parse(localStorage.getItem('offlineRooms') || '[]');
+
+                // Check duplicate
+                if (rooms.some(r => r.code === roomCode)) {
+                    throw new Error('Mã phòng đã tồn tại!');
+                }
+
+                // Create room
+                const room = {
+                    id: 'offline_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    name: roomName,
+                    code: roomCode,
+                    description: 'Test room',
+                    quiz: {
+                        id: 'test_quiz',
+                        title: 'Test Quiz',
+                        questions: [],
+                        totalQuestions: 0
+                    },
+                    creatorId: getCreatorId(),
+                    creatorName: 'Test User',
+                    createdAt: new Date().toISOString(),
+                    participants: 0,
+                    attempts: 0,
+                    leaderboard: [],
+                    mode: 'offline'
+                };
+
+                // Save
+                rooms.push(room);
+                localStorage.setItem('offlineRooms', JSON.stringify(rooms));
+
+                // Show result
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    ✅ <strong>Tạo phòng thành công!</strong><br>
+                    📝 Tên: ${roomName}<br>
+                    🔑 Mã: ${roomCode}<br>
+                    💾 Mode: Offline<br>
+                    🆔 ID: ${room.id}
+                `;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `❌ <strong>Lỗi:</strong> ${error.message}`;
+            }
+        }
+
+        function testLoadRooms() {
+            const resultDiv = document.getElementById('result-load');
+
+            try {
+                const rooms = JSON.parse(localStorage.getItem('offlineRooms') || '[]');
+                const creatorId = getCreatorId();
+                const myRooms = rooms.filter(r => r.creatorId === creatorId);
+
+                resultDiv.className = 'result info';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    📊 <strong>Thống kê:</strong><br>
+                    📂 Tổng số phòng: ${rooms.length}<br>
+                    👤 Phòng của tôi: ${myRooms.length}<br>
+                    🆔 Creator ID: ${creatorId}<br><br>
+                    <strong>Danh sách:</strong><br>
+                    ${myRooms.map(r => `• ${r.name} (${r.code})`).join('<br>') || 'Chưa có phòng nào'}
+                `;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `❌ <strong>Lỗi:</strong> ${error.message}`;
+            }
+        }
+
+        function testJoinRoom() {
+            const resultDiv = document.getElementById('result-join');
+            const code = document.getElementById('join-code').value;
+
+            try {
+                if (!code) {
+                    throw new Error('Vui lòng nhập mã phòng!');
+                }
+
+                const rooms = JSON.parse(localStorage.getItem('offlineRooms') || '[]');
+                const room = rooms.find(r => r.code === code);
+
+                if (!room) {
+                    throw new Error('Không tìm thấy phòng với mã: ' + code);
+                }
+
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    ✅ <strong>Tìm thấy phòng!</strong><br>
+                    📝 Tên: ${room.name}<br>
+                    🔑 Mã: ${room.code}<br>
+                    👤 Người tạo: ${room.creatorName}<br>
+                    📅 Ngày tạo: ${new Date(room.createdAt).toLocaleString('vi-VN')}<br>
+                    💾 Mode: ${room.mode || 'offline'}
+                `;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `❌ <strong>Lỗi:</strong> ${error.message}`;
+            }
+        }
+
+        function testDeleteRoom() {
+            const resultDiv = document.getElementById('result-delete');
+            const code = document.getElementById('delete-code').value;
+
+            try {
+                if (!code) {
+                    throw new Error('Vui lòng nhập mã phòng!');
+                }
+
+                const rooms = JSON.parse(localStorage.getItem('offlineRooms') || '[]');
+                const room = rooms.find(r => r.code === code);
+
+                if (!room) {
+                    throw new Error('Không tìm thấy phòng với mã: ' + code);
+                }
+
+                // Delete
+                const updatedRooms = rooms.filter(r => r.code !== code);
+                localStorage.setItem('offlineRooms', JSON.stringify(updatedRooms));
+
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    ✅ <strong>Xóa phòng thành công!</strong><br>
+                    📝 Đã xóa: ${room.name}<br>
+                    🔑 Mã: ${code}<br>
+                    📊 Còn lại: ${updatedRooms.length} phòng
+                `;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `❌ <strong>Lỗi:</strong> ${error.message}`;
+            }
+        }
+
+        function testClearAll() {
+            const resultDiv = document.getElementById('result-clear');
+
+            if (!confirm('Bạn có chắc muốn xóa TẤT CẢ dữ liệu?')) {
+                return;
+            }
+
+            try {
+                const rooms = JSON.parse(localStorage.getItem('offlineRooms') || '[]');
+                const count = rooms.length;
+
+                localStorage.removeItem('offlineRooms');
+                localStorage.removeItem('creatorId');
+                localStorage.removeItem('userRoomHistory');
+
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    ✅ <strong>Đã xóa tất cả!</strong><br>
+                    🗑️ Đã xóa ${count} phòng<br>
+                    🧹 localStorage đã được reset
+                `;
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `❌ <strong>Lỗi:</strong> ${error.message}`;
+            }
+        }
+
+        function getCreatorId() {
+            let creatorId = localStorage.getItem('creatorId');
+            if (!creatorId) {
+                creatorId = 'creator_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('creatorId', creatorId);
+            }
+            return creatorId;
+        }
+
+        // Auto load on page load
+        window.addEventListener('load', () => {
+            console.log('🧪 Room System Test Page Loaded');
+            console.log('💾 Creator ID:', getCreatorId());
+        });
+    </script>
+</body>
+</html>

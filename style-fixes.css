@@ -1,0 +1,31 @@
+/* Style Fixes - Chỉ giữ lại những CSS cần thiết */
+
+/* Fix z-index cho notification container */
+.notification-container {
+    z-index: 10000 !important;
+}
+
+/* Ẩn offline empty state */
+.offline-empty-state {
+    display: none !important;
+}
+
+/* Ẩn empty state card trong explore tab khi không cần thiết */
+#explore-tab .empty-state-card {
+    display: none !important;
+}
+
+/* Mobile responsive cho notification */
+@media (max-width: 768px) {
+    .notification-container {
+        top: 70px !important;
+        right: 10px !important;
+        left: 10px !important;
+    }
+}
+
+
+/* Ẩn toast cũ - chỉ dùng notification system mới */
+.toast {
+    display: none !important;
+}

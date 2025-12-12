@@ -1,0 +1,157 @@
+/* ============================================================================
+   SIDEBAR HORIZONTAL - Chuyển sidebar dọc thành ngang
+   ============================================================================ */
+
+@media (min-width: 901px) {
+    /* Chuyển sidebar thành horizontal */
+    .sidebar {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        width: 100% !important;
+        height: auto !important;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+        z-index: 999;
+        overflow-x: auto;
+        overflow-y: visible;
+    }
+    
+    .sidebar-header {
+        display: none; /* Ẩn logo trong sidebar vì đã có ở top nav */
+    }
+    
+    .sidebar-content {
+        padding: 0 !important;
+    }
+    
+    /* Navigation ngang */
+    .sidebar-nav {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center;
+        padding: 0 40px;
+        gap: 0;
+    }
+    
+    .nav-section {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+    
+    .nav-section-title {
+        display: none; /* Ẩn tiêu đề section */
+    }
+    
+    /* Personal section - Dropdown */
+    .personal-section {
+        position: relative;
+    }
+    
+    .personal-menu-items {
+        display: none !important; /* Ẩn mặc định */
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        min-width: 220px;
+        padding: 8px 0;
+        z-index: 1000;
+        margin-top: 4px;
+    }
+    
+    .personal-section:hover .personal-menu-items,
+    .personal-menu-items.show {
+        display: block !important;
+    }
+    
+    .personal-menu-items .nav-item {
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+    
+    /* Nav items ngang */
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 20px 16px !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-item:hover {
+        background: rgba(102, 126, 234, 0.05);
+        transform: none;
+    }
+    
+    .nav-item.active {
+        background: transparent;
+        border-bottom-color: #667eea;
+    }
+    
+    .nav-item.active::before {
+        display: none; /* Bỏ thanh dọc bên trái */
+    }
+    
+    /* Adjust main content */
+    .main-content {
+        margin-left: 0 !important;
+        margin-top: 140px !important; /* 70px top nav + 70px sidebar horizontal */
+        width: 100% !important;
+    }
+    
+    .main-content-area {
+        padding: 24px 40px;
+    }
+    
+    /* Hide mobile toggle */
+    .mobile-menu-toggle {
+        display: none !important;
+    }
+    
+    .sidebar-toggle {
+        display: none !important;
+    }
+    
+    /* User profile section */
+    .user-profile {
+        display: none; /* Ẩn avatar trong sidebar */
+    }
+}
+
+/* Scrollbar cho sidebar horizontal */
+@media (min-width: 901px) {
+    .sidebar::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .sidebar::-webkit-scrollbar-track {
+        background: #f3f4f6;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 2px;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+    }
+}
+
+/* Mobile vẫn giữ nguyên sidebar dọc */
+@media (max-width: 900px) {
+    /* Không thay đổi gì */
+}
